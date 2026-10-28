@@ -1,0 +1,7 @@
+# Java regexes matched (find) against "Namespace.Class$$Method" from il2cpp/script.json. One per line.
+# Start narrow, read output, widen. ~1700 methods decompile in a few minutes.
+^Game\.Match\.MatchManager(\.|\$\$)
+^Game\.AI\.
+^Game\.Net\.(Session|Resync)
+# one method:
+^Game\.Economy\.Reward\$\$RewardFor

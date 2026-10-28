@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 """Print a Ghidra .c compactly (token saver): drops decls, il2cpp init guards, stack noise; names `this[0xOFF]` fields from dump.cs.
-usage: fn.py <file.c | Class$$Method> [DIR] [-n MAXLINES] [--raw-offsets]
+usage: fn.py <file.c | Class$$Method> [DIR] [-n MAXLINES]
   exact `Class$$Method` (or bare `Method` if unique) wins; several matches -> lists them, pick one. DIR defaults to $GRE_DECOMP or ./decompiled.
   field names need dump.cs (auto: $GRE_DUMP, $GRE_WORK/il2cpp/dump.cs, $GRE_WORK/tools/out_perfare/dump.cs)."""
 import re, sys, glob, os, argparse
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import _dump
 ap = argparse.ArgumentParser(usage=__doc__); ap.add_argument('target'); ap.add_argument('dir', nargs='?')
-ap.add_argument('-n', type=int, default=int(os.environ.get('N', 400))); ap.add_argument('--raw-offsets', action='store_true')
+ap.add_argument('-n', type=int, default=400)
 o = ap.parse_args(); d = o.dir or os.environ.get('GRE_DECOMP', 'decompiled')
 if os.path.isfile(o.target): f = o.target
 else:
@@ -18,7 +18,7 @@ else:
     if len(g) > 1: sys.exit(f'{len(g)} matches, be specific:\n' + '\n'.join('  ' + os.path.basename(x)[:-2] for x in g[:25]) + ('\n  ...' if len(g) > 25 else ''))
     f = g[0]
 cls = os.path.basename(f).split('$$')[0]
-F = {} if o.raw_offsets else _dump.fields(cls)
+F = _dump.fields(cls)
 decl = re.compile(r'^\s+(?:undefined\d*|float|double|long|ulong|int|uint|short|ushort|char|byte|bool|code|void|\w+_o)\s*\**\s*[\w\[\] ,*]+;\s*$')
 def field(m):
     n = F.get(int(m.group(1), 16)); return f'this.{n[0]}' if n else f'this[{m.group(1)}]'

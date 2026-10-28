@@ -23,22 +23,23 @@ def scan(paths, apply, excl=()):
     hits = 0
     for root in paths:
         if not os.path.exists(root): sys.exit(f'no such path: {root}')   # a typo'd path must not pass as "0 hits"
-        walk = [(os.path.dirname(root), [], [os.path.basename(root)])] if os.path.isfile(root) else os.walk(root)
-        for dp, ds, fs in walk:
-            ds[:] = [d for d in ds if d not in excl]
-            for f in fs:
-                p = os.path.join(dp, f)
-                try: t = open(p, encoding='utf8').read()
-                except Exception: continue
-                n = 0
-                for pat in PATS[:1]:
-                    for m in pat.finditer(t):
-                        if m.group(2).lower().startswith('<redacted'): continue
-                        n += 1
-                        if not apply: print(f'{p}: {m.group(1).strip()[:40]}...')
-                if n:
-                    hits += n
-                    if apply: open(p, 'w', encoding='utf8').write(redact_text(t))
+        def files():
+            if os.path.isfile(root): yield root; return
+            for dp, ds, fs in os.walk(root):
+                ds[:] = [d for d in ds if d not in excl]
+                for f in fs: yield os.path.join(dp, f)
+        for p in files():
+            try: t = open(p, encoding='utf8').read()
+            except Exception: continue
+            n = 0
+            for pat in PATS[:1]:
+                for m in pat.finditer(t):
+                    if m.group(2).lower().startswith('<redacted'): continue
+                    n += 1
+                    if not apply: print(f'{p}: {m.group(1).strip()[:40]}...')
+            if n:
+                hits += n
+                if apply: open(p, 'w', encoding='utf8').write(redact_text(t))
     return hits
 if __name__ == '__main__':
     if len(sys.argv) < 3 or sys.argv[1] not in ('--check', '--apply'): sys.exit(__doc__)

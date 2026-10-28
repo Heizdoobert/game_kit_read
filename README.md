@@ -18,7 +18,10 @@ bin/unity_dump.py      Addressables bundles / data.unity3d MonoBehaviours -> JSO
 bin/find_configs.py    rank dumped JSON by "looks like a balance table"
 bin/a64dis.py          disassemble small methods by name; --f32 VA n reads literal pool
 bin/ctor_defaults.py   map a decompiled .ctor's `this+0xOFF = imm` stores to dump.cs field names (code-default field values)
-bin/fn.py              print a decompiled .c compactly (~25% fewer tokens: no decls/guards/casts); fn.py 'Class$$Method' DIR -n 120
+bin/fn.py              print a decompiled .c compactly (no decls/guards/casts) and name fields from dump.cs (`this.m_LoadCo`); ambiguous name -> lists matches; fn.py 'Class$$Method' -n 120
+bin/xref.py            who touches a field (-f Class FIELD, W/R) / uses a string (-s) / calls a function (-c) across decompiled/
+bin/selftest.sh        offline smoke test of the helpers on tiny fixtures (run after any change to bin/)
+bin/_dump.py           shared dump.cs field-table helper (base classes, nested types)
 bin/pool_consts.py     list float/int constants a method loads (ldr literal, adrp+ldr, fmov, mov+movk); -r REGEX for a whole class
 bin/ghidra_decomp.sh   headless decompile of regex-selected methods (ghidra/Il2CppDecomp.java)
 bin/decomp_digest.py   decompiled dir -> per-class markdown (callees, strings, floats, field offsets)

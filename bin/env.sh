@@ -14,3 +14,4 @@ export DOTNET_ROLL_FORWARD=Major
 first(){ for p in "$@"; do [[ -e "$p" ]] && { echo "$p"; return; }; done; echo "$1"; }
 export GRE_SO="${GRE_SO:-$(first "$GRE_WORK/apk/lib/arm64-v8a/libil2cpp.so" "$GRE_WORK/apk_extract/lib/arm64-v8a/libil2cpp.so")}"
 export GRE_SCRIPT="${GRE_SCRIPT:-$(first "$GRE_WORK/il2cpp/script.json" "$GRE_WORK/tools/out_perfare/script.json")}"
+export GRE_DUMP="${GRE_DUMP:-$(first "$GRE_WORK/il2cpp/dump.cs" "$GRE_WORK/tools/out_perfare/dump.cs")}"

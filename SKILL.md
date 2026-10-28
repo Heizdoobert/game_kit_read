@@ -36,8 +36,12 @@ overview/stack - gameplay loop & rules - roles/AI/bots - networking (transport, 
 - Tiny methods (getters, tail-calls) can decompile with 1000+ lines of bleed-over: skip them in targets, use `a64dis.py`. Skim with `bin/decomp_digest.py` before reading .c files.
 - Don't name a script `dis.py` (shadows stdlib). Large `find /` times out - scope searches.
 
+## Kit health
+After editing anything in `bin/`: `bin/selftest.sh` must print `selftest PASS`. `redact.py --check` accepts files or dirs and exits non-zero on a missing path (earlier versions silently skipped file arguments).
+
 ## Token budget (read this before opening .c files)
 - Never `cat` a decompiled .c: `bin/decomp_digest.py` first (one line per class), then `bin/fn.py 'Class$$Method' DIR -n 120` (compact, capped).
+- Field meaning: `fn.py` already prints `this.<field>`; to find where a field is set/read use `bin/xref.py -f Class field` (1 line per method) instead of grepping `.c` files. Strings: `xref.py -s text`; callers: `xref.py -c Func`.
 - Need only numbers? `pool_consts.py` / `ctor_defaults.py` print a few lines instead of 1000-line bodies.
 - Big classes: read the call order (`grep -o 'Class__\w*' file | awk '!s[$0]++'`), then only the 2-3 methods that carry the rule.
 - Skip getters/setters/ctors/events/UI/tracking classes in targets (`(?!get_|set_|add_|remove_|\.ctor)`).

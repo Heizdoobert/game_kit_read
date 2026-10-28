@@ -22,7 +22,9 @@ def redact_obj(o, kn=None):
 def scan(paths, apply, excl=()):
     hits = 0
     for root in paths:
-        for dp, ds, fs in os.walk(root):
+        if not os.path.exists(root): sys.exit(f'no such path: {root}')   # a typo'd path must not pass as "0 hits"
+        walk = [(os.path.dirname(root), [], [os.path.basename(root)])] if os.path.isfile(root) else os.walk(root)
+        for dp, ds, fs in walk:
             ds[:] = [d for d in ds if d not in excl]
             for f in fs:
                 p = os.path.join(dp, f)

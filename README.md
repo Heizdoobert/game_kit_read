@@ -41,7 +41,7 @@ bin/doctor.sh                                  #    verify
 bin/run_all.sh game.apk W                      # 1-4. unpack -> meta -> il2cpp dump -> asset dump (+kb scaffold: add 'kb' stage)
 source bin/env.sh W                            #    gives $PY, GRE_SO, GRE_SCRIPT
 $PY bin/find_configs.py W/assets_dump          # 4b. find balance/config tables; look for RemoteConfigData/GameConfig/*Profile
-$PY bin/ctor_defaults.py out/Ns.Class\$\$.ctor.c dump.cs Ns.Class      # 5c. field defaults by name (prefab may override)
+$PY bin/ctor_defaults.py out/Ns.Class\$\$.ctor.c Ns.Class      # 5c. field defaults by name (prefab may override)
 $PY bin/pool_consts.py -r '^Ns\.Class\$\$'                 # 5b. all numeric thresholds of a class (needs GRE_SO, GRE_SCRIPT)
 $PY bin/a64dis.py 'Class$$Method'              # 5a. small rules (formulas, defaults); --f32 VA n for ctor literal pools
 cp templates/targets_example.txt W/kb/targets.txt   # 5b. edit regexes -> Class$$Method
